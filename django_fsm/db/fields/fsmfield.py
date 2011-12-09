@@ -101,7 +101,7 @@ class FSMMeta(object):
             instance.__dict__[field_name] = state
 
 
-def transition(field=None, source='*', target=None, save=False, conditions=[]):
+def transition(field=None, source='*', target=None, conditions=[]):
     """
     Method decorator for mark allowed transition
 
@@ -120,18 +120,18 @@ def transition(field=None, source='*', target=None, save=False, conditions=[]):
                     raise TransitionNotAllowed("Can't switch from state '%s' using method '%s'" % (meta.current_state(instance), func.func_name))
 
                 source_state = meta.current_state(instance)
+                target_state = meta.next_state(instance)
+
                 pre_transition.send(
                     sender = instance.__class__,
                     instance = instance,
                     name = func.func_name,
                     source = source_state,
-                    target = meta.next_state(instance))
+                    target = target_state)
+
+                kwargs.update({'source': source_state, 'target': target_state})
  	
                 result = func(instance, *args, **kwargs)
-
-                meta.to_next_state(instance)
-                if save:
-                    instance.save()
 
                 post_transition.send(
                     sender = instance.__class__,
