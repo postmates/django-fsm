@@ -57,14 +57,11 @@ will be changed, but not written to the database.
         post.save()
         return redirect('/')
 
-If you are using the transition decorator with the `save` argument set to `True`,
-the new state will be written to the database
+<del>If you are using the transition decorator with the `save` argument set to `True`,
+the new state will be written to the database</del>
 
-    @transition(source='new', target='published', save=True)
-    def publish(self):
-        """
-        Side effects other than changing state goes here
-        """
+**Update: the save parameter was removed in favor of explicitly changing the state
+within the transition method and manually updating the database.**
 
 If you require some conditions to be met before changing state, use the
 `conditions` argument to `transition`. `conditions` must be a list of functions
